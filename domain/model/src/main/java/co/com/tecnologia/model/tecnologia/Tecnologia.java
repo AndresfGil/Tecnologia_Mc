@@ -1,14 +1,16 @@
 package co.com.tecnologia.model.tecnologia;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-//import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.NoArgsConstructor;
+
 
 @Getter
 @Setter
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Tecnologia {
+
+    private Long idTecnologia;
+    private String nombre;
+    private String descripcion;
 }
