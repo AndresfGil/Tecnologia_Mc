@@ -11,6 +11,7 @@ public record TecnologiaRequestDto(
 
         @Schema(description = "Descripción de la tecnología", example = "Lenguaje de programación orientado a objetos", required = true, maxLength = 90)
         @NotNull(message = "La descripción es obligatoria")
+        @NotBlank(message = "debe tener una descripcion valida")
         @Size(max = 90, message = "La descripción no puede exceder 90 caracteres")
         String descripcion
 ) {

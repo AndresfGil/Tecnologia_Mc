@@ -11,13 +11,11 @@ public class TecnologiaUseCase {
 
     private final TecnologiaRepository tecnologiaRepository;
 
-    public Mono<Tecnologia> guardarTecnologia(Tecnologia tecnologia){
+    public Mono<Tecnologia> guardarTecnologia(Tecnologia tecnologia) {
         return tecnologiaRepository.existePorNombre(tecnologia.getNombre())
-                .flatMap(existe -> {
-                    if (existe) {
-                        return Mono.error(new ValidarNombreExistente(tecnologia.getNombre()));
-                    }
-                    return tecnologiaRepository.guardarTecnologia(tecnologia);
-                });
+                .flatMap(existe -> Boolean.TRUE.equals(existe)
+                        ? Mono.error(new ValidarNombreExistente(tecnologia.getNombre()))
+                        : tecnologiaRepository.guardarTecnologia(tecnologia));
     }
+
 }

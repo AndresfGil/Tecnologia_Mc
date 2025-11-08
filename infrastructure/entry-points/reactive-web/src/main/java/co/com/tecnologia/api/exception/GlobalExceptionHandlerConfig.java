@@ -61,60 +61,66 @@ public class GlobalExceptionHandlerConfig {
             log.error("[ERROR] {} on path={} correlationId={}", ex.getClass().getSimpleName(), request.path(), correlationId, ex);
             log.error("Exception details: {}", ex.getMessage());
 
-            if (ex instanceof ConstraintViolationException cve) {
-                status = HttpStatus.BAD_REQUEST;
-                List<ErrorDetail> details = cve.getConstraintViolations().stream()
-                        .map(v -> new ErrorDetail(v.getPropertyPath().toString(), v.getMessage()))
-                        .toList();
-                payload = ErrorResponse.of(
-                        "VALIDATION_ERROR",
-                        "Datos de entrada inválidos",
-                        status.value(),
-                        request.path(),
-                        details,
-                        correlationId
-                );
-            } else if (ex instanceof BaseException be) {
-                status = HttpStatus.valueOf(be.getStatusCode());
-                List<ErrorDetail> details = be.getErrors() == null ? null : be.getErrors().stream()
-                        .map(msg -> {
-                            if (msg != null && msg.contains(" ")) {
-                                int firstSpaceIndex = msg.indexOf(" ");
-                                String field = msg.substring(0, firstSpaceIndex);
-                                String message = msg.substring(firstSpaceIndex + 1);
-                                return new ErrorDetail(field, message);
-                            }
-                            return new ErrorDetail("", msg != null ? msg : "");
-                        })
-                        .toList();
-                payload = ErrorResponse.of(
-                        be.getErrorCode(),
-                        be.getMessage(),
-                        status.value(),
-                        request.path(),
-                        details,
-                        correlationId
-                );
-            } else if (ex instanceof IllegalArgumentException iae) {
-                status = HttpStatus.BAD_REQUEST;
-                payload = ErrorResponse.of(
-                        "INVALID_ARGUMENT",
-                        iae.getMessage(),
-                        status.value(),
-                        request.path(),
-                        null,
-                        correlationId
-                );
-            } else {
-                status = HttpStatus.INTERNAL_SERVER_ERROR;
-                payload = ErrorResponse.of(
-                        "INTERNAL_ERROR",
-                        "Ocurrió un error inesperado",
-                        status.value(),
-                        request.path(),
-                        null,
-                        correlationId
-                );
+            switch (ex) {
+                case ConstraintViolationException cve -> {
+                    status = HttpStatus.BAD_REQUEST;
+                    List<ErrorDetail> details = cve.getConstraintViolations().stream()
+                            .map(v -> new ErrorDetail(v.getPropertyPath().toString(), v.getMessage()))
+                            .toList();
+                    payload = ErrorResponse.of(
+                            "VALIDATION_ERROR",
+                            "Datos de entrada inválidos",
+                            status.value(),
+                            request.path(),
+                            details,
+                            correlationId
+                    );
+                }
+                case BaseException be -> {
+                    status = HttpStatus.valueOf(be.getStatusCode());
+                    List<ErrorDetail> details = be.getErrors() == null ? null : be.getErrors().stream()
+                            .map(msg -> {
+                                if (msg != null && msg.contains(" ")) {
+                                    int firstSpaceIndex = msg.indexOf(" ");
+                                    String field = msg.substring(0, firstSpaceIndex);
+                                    String message = msg.substring(firstSpaceIndex + 1);
+                                    return new ErrorDetail(field, message);
+                                }
+                                String message = msg != null ? msg : "";
+                                return new ErrorDetail("", message);
+                            })
+                            .toList();
+                    payload = ErrorResponse.of(
+                            be.getErrorCode(),
+                            be.getMessage(),
+                            status.value(),
+                            request.path(),
+                            details,
+                            correlationId
+                    );
+                }
+                case IllegalArgumentException iae -> {
+                    status = HttpStatus.BAD_REQUEST;
+                    payload = ErrorResponse.of(
+                            "INVALID_ARGUMENT",
+                            iae.getMessage(),
+                            status.value(),
+                            request.path(),
+                            null,
+                            correlationId
+                    );
+                }
+                default -> {
+                    status = HttpStatus.INTERNAL_SERVER_ERROR;
+                    payload = ErrorResponse.of(
+                            "INTERNAL_ERROR",
+                            "Ocurrió un error inesperado",
+                            status.value(),
+                            request.path(),
+                            null,
+                            correlationId
+                    );
+                }
             }
 
             return ServerResponse.status(status)
