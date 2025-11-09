@@ -1,5 +1,6 @@
 package co.com.tecnologia.api.helpers;
 
+import co.com.tecnologia.api.dto.TecnologiaBatchResponseDto;
 import co.com.tecnologia.api.dto.TecnologiaRequestDto;
 import co.com.tecnologia.api.dto.TecnologiaResponseDto;
 import co.com.tecnologia.model.tecnologia.Tecnologia;
@@ -17,9 +18,16 @@ public class TecnologiaMapper {
 
     public TecnologiaResponseDto toResponseDto(Tecnologia tecnologia) {
         return new TecnologiaResponseDto(
-                tecnologia.getIdTecnologia(),
+                tecnologia.getId(),
                 tecnologia.getNombre(),
                 tecnologia.getDescripcion()
+        );
+    }
+
+    public TecnologiaBatchResponseDto toBatchResponseDto(Tecnologia tecnologia) {
+        return new TecnologiaBatchResponseDto(
+                tecnologia.getId(),
+                tecnologia.getNombre()
         );
     }
 }

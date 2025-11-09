@@ -15,6 +15,7 @@ public class RouterRest implements TecnologiaControllerDocs {
     @Bean
     @Override
     public RouterFunction<ServerResponse> routerFunction(TecnologiaHandler handler) {
-        return route(POST("/api/tecnologia"), handler::listenGuardarTecnologia);
+        return route(POST("/api/tecnologia"), handler::listenGuardarTecnologia)
+                .andRoute(POST("/api/tecnologia/batch"), handler::listenObtenerTecnologiasPorIds);
     }
 }

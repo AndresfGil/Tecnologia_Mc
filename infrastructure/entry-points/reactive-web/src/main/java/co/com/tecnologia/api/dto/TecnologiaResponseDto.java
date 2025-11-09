@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "DTO de respuesta con los datos de la tecnología creada")
 public record TecnologiaResponseDto(
         @Schema(description = "Identificador único de la tecnología", example = "1")
-        Long idTecnologia,
+        Long id,
         
         @Schema(description = "Nombre de la tecnología", example = "Java")
         String nombre,

@@ -9,12 +9,12 @@ class TecnologiaTest {
     @Test
     void builder_DeberiaCrearInstanciaConTodosLosCampos() {
         Tecnologia tecnologia = Tecnologia.builder()
-                .idTecnologia(1L)
+                .id(1L)
                 .nombre("Java")
                 .descripcion("Lenguaje de programación")
                 .build();
 
-        assertEquals(1L, tecnologia.getIdTecnologia());
+        assertEquals(1L, tecnologia.getId());
         assertEquals("Java", tecnologia.getNombre());
         assertEquals("Lenguaje de programación", tecnologia.getDescripcion());
     }
@@ -23,7 +23,7 @@ class TecnologiaTest {
     void builder_DeberiaCrearInstanciaConCamposNulos() {
         Tecnologia tecnologia = Tecnologia.builder().build();
 
-        assertNull(tecnologia.getIdTecnologia());
+        assertNull(tecnologia.getId());
         assertNull(tecnologia.getNombre());
         assertNull(tecnologia.getDescripcion());
     }
@@ -32,7 +32,7 @@ class TecnologiaTest {
     void noArgsConstructor_DeberiaCrearInstanciaVacia() {
         Tecnologia tecnologia = new Tecnologia();
 
-        assertNull(tecnologia.getIdTecnologia());
+        assertNull(tecnologia.getId());
         assertNull(tecnologia.getNombre());
         assertNull(tecnologia.getDescripcion());
     }
@@ -41,7 +41,7 @@ class TecnologiaTest {
     void allArgsConstructor_DeberiaCrearInstanciaConTodosLosParametros() {
         Tecnologia tecnologia = new Tecnologia(1L, "Python", "Lenguaje interpretado");
 
-        assertEquals(1L, tecnologia.getIdTecnologia());
+        assertEquals(1L, tecnologia.getId());
         assertEquals("Python", tecnologia.getNombre());
         assertEquals("Lenguaje interpretado", tecnologia.getDescripcion());
     }
@@ -49,7 +49,7 @@ class TecnologiaTest {
     @Test
     void toBuilder_DeberiaCrearNuevaInstanciaConValoresModificados() {
         Tecnologia original = Tecnologia.builder()
-                .idTecnologia(1L)
+                .id(1L)
                 .nombre("Java")
                 .descripcion("Original")
                 .build();
@@ -58,7 +58,7 @@ class TecnologiaTest {
                 .descripcion("Modificada")
                 .build();
 
-        assertEquals(1L, modificada.getIdTecnologia());
+        assertEquals(1L, modificada.getId());
         assertEquals("Java", modificada.getNombre());
         assertEquals("Modificada", modificada.getDescripcion());
         assertNotSame(original, modificada);
@@ -67,13 +67,15 @@ class TecnologiaTest {
     @Test
     void setters_DeberiaModificarValores() {
         Tecnologia tecnologia = new Tecnologia();
-        tecnologia.setIdTecnologia(2L);
+        tecnologia.setId(2L);
         tecnologia.setNombre("JavaScript");
         tecnologia.setDescripcion("Lenguaje de scripting");
 
-        assertEquals(2L, tecnologia.getIdTecnologia());
+        assertEquals(2L, tecnologia.getId());
         assertEquals("JavaScript", tecnologia.getNombre());
         assertEquals("Lenguaje de scripting", tecnologia.getDescripcion());
     }
 }
+
+
 

@@ -4,7 +4,10 @@ import co.com.tecnologia.model.tecnologia.Tecnologia;
 import co.com.tecnologia.model.tecnologia.exception.ValidarNombreExistente;
 import co.com.tecnologia.model.tecnologia.gateways.TecnologiaRepository;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 public class TecnologiaUseCase {
@@ -18,4 +21,7 @@ public class TecnologiaUseCase {
                         : tecnologiaRepository.guardarTecnologia(tecnologia));
     }
 
+    public Flux<Tecnologia> obtenerTecnologiasPorIds(List<Long> ids) {
+        return tecnologiaRepository.obtenerTecnologiasPorIds(ids);
+    }
 }

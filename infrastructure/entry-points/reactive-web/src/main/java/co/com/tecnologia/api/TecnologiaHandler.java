@@ -1,5 +1,6 @@
 package co.com.tecnologia.api;
 
+import co.com.tecnologia.api.dto.TecnologiaBatchRequestDto;
 import co.com.tecnologia.api.dto.TecnologiaRequestDto;
 import co.com.tecnologia.api.helpers.DtoValidator;
 import co.com.tecnologia.api.helpers.TecnologiaMapper;
@@ -30,5 +31,17 @@ public class TecnologiaHandler {
                                 .status(HttpStatus.CREATED)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(responseDto)));
+    }
+
+    public Mono<ServerResponse> listenObtenerTecnologiasPorIds(ServerRequest req) {
+        return req.bodyToMono(TecnologiaBatchRequestDto.class)
+                .flatMap(dto -> dtoValidator.validate(dto)
+                        .flatMapMany(dtoValidado -> tecnologiaUseCase.obtenerTecnologiasPorIds(dtoValidado.ids()))
+                        .map(tecnologiaMapper::toBatchResponseDto)
+                        .collectList()
+                        .flatMap(responseList -> ServerResponse
+                                .status(HttpStatus.OK)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(responseList)));
     }
 }

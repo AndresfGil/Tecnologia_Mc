@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class Tecnologia {
 
-    private Long idTecnologia;
+    private Long id;
     private String nombre;
     private String descripcion;
 }
