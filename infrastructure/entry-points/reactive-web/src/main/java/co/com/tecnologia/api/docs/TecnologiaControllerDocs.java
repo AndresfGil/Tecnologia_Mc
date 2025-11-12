@@ -81,6 +81,66 @@ public interface TecnologiaControllerDocs {
                                     )
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/tecnologia/activar",
+                    produces = MediaType.APPLICATION_JSON_VALUE,
+                    method = RequestMethod.PATCH,
+                    beanClass = TecnologiaHandler.class,
+                    beanMethod = "listenActivarTecnologias",
+                    operation = @Operation(
+                            operationId = "activarTecnologias",
+                            summary = "Activar tecnologías (Batch)",
+                            description = "Activa múltiples tecnologías por sus IDs. El campo 'activa' se establecerá en 'true' para todas las tecnologías especificadas.",
+                            requestBody = @RequestBody(
+                                    required = true,
+                                    content = @Content(schema = @Schema(implementation = TecnologiaBatchRequestDto.class))
+                            ),
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "204",
+                                            description = "Tecnologías activadas exitosamente"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "400",
+                                            description = "Error de validación en los datos enviados"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "500",
+                                            description = "Error interno del servidor"
+                                    )
+                            }
+                    )
+            ),
+            @RouterOperation(
+                    path = "/api/tecnologia/desactivar",
+                    produces = MediaType.APPLICATION_JSON_VALUE,
+                    method = RequestMethod.PATCH,
+                    beanClass = TecnologiaHandler.class,
+                    beanMethod = "listenDesactivarTecnologias",
+                    operation = @Operation(
+                            operationId = "desactivarTecnologias",
+                            summary = "Desactivar tecnologías (Batch)",
+                            description = "Desactiva múltiples tecnologías por sus IDs. El campo 'activa' se establecerá en 'false' para todas las tecnologías especificadas.",
+                            requestBody = @RequestBody(
+                                    required = true,
+                                    content = @Content(schema = @Schema(implementation = TecnologiaBatchRequestDto.class))
+                            ),
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "204",
+                                            description = "Tecnologías desactivadas exitosamente"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "400",
+                                            description = "Error de validación en los datos enviados"
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "500",
+                                            description = "Error interno del servidor"
+                                    )
+                            }
+                    )
             )
     })
     public RouterFunction<ServerResponse> routerFunction(TecnologiaHandler handler);

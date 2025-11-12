@@ -20,6 +20,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +40,7 @@ class TecnologiaUseCaseTest {
                 .id(1L)
                 .nombre("Java")
                 .descripcion("Lenguaje de programación")
+                .activa(true)
                 .build();
     }
 
@@ -108,11 +110,13 @@ class TecnologiaUseCaseTest {
                 .id(1L)
                 .nombre("Java")
                 .descripcion("Lenguaje de programación")
+                .activa(true)
                 .build();
         Tecnologia tecnologia2 = Tecnologia.builder()
                 .id(2L)
                 .nombre("Python")
                 .descripcion("Lenguaje interpretado")
+                .activa(true)
                 .build();
         List<Long> ids = Arrays.asList(1L, 2L);
 
@@ -121,6 +125,29 @@ class TecnologiaUseCaseTest {
         StepVerifier.create(tecnologiaUseCase.obtenerTecnologiasPorIds(ids))
                 .expectNext(tecnologia1)
                 .expectNext(tecnologia2)
+                .verifyComplete();
+    }
+
+    @Test
+    void obtenerTecnologiasPorIds_CuandoHayTecnologiasInactivas_DeberiaFiltrarlas() {
+        Tecnologia tecnologiaActiva = Tecnologia.builder()
+                .id(1L)
+                .nombre("Java")
+                .descripcion("Lenguaje de programación")
+                .activa(true)
+                .build();
+        Tecnologia tecnologiaInactiva = Tecnologia.builder()
+                .id(2L)
+                .nombre("Python")
+                .descripcion("Lenguaje interpretado")
+                .activa(false)
+                .build();
+        List<Long> ids = Arrays.asList(1L, 2L);
+
+        when(tecnologiaRepository.obtenerTecnologiasPorIds(anyList())).thenReturn(Flux.just(tecnologiaActiva, tecnologiaInactiva));
+
+        StepVerifier.create(tecnologiaUseCase.obtenerTecnologiasPorIds(ids))
+                .expectNext(tecnologiaActiva)
                 .verifyComplete();
     }
 
@@ -153,6 +180,22 @@ class TecnologiaUseCaseTest {
     }
 
     @Test
+    void obtenerTecnologiasPorIds_CuandoTecnologiaInactiva_DeberiaFiltrarla() {
+        Tecnologia tecnologiaInactiva = Tecnologia.builder()
+                .id(1L)
+                .nombre("Java")
+                .descripcion("Lenguaje de programación")
+                .activa(false)
+                .build();
+        List<Long> ids = Collections.singletonList(1L);
+
+        when(tecnologiaRepository.obtenerTecnologiasPorIds(anyList())).thenReturn(Flux.just(tecnologiaInactiva));
+
+        StepVerifier.create(tecnologiaUseCase.obtenerTecnologiasPorIds(ids))
+                .verifyComplete();
+    }
+
+    @Test
     void obtenerTecnologiasPorIds_CuandoRepositorioRetornaError_DeberiaPropagarError() {
         List<Long> ids = Arrays.asList(1L, 2L);
         RuntimeException error = new RuntimeException("Error de conexión");
@@ -170,6 +213,7 @@ class TecnologiaUseCaseTest {
                 .id(2L)
                 .nombre("Python")
                 .descripcion("Lenguaje interpretado")
+                .activa(true)
                 .build();
         when(tecnologiaRepository.obtenerTecnologiasPorIds(anyList())).thenReturn(Flux.just(tecnologia, tecnologia2));
 
@@ -187,16 +231,19 @@ class TecnologiaUseCaseTest {
                 .id(1L)
                 .nombre("Java")
                 .descripcion("Lenguaje de programación")
+                .activa(true)
                 .build();
         Tecnologia tecnologia2 = Tecnologia.builder()
                 .id(2L)
                 .nombre("Python")
                 .descripcion("Lenguaje interpretado")
+                .activa(true)
                 .build();
         Tecnologia tecnologia3 = Tecnologia.builder()
                 .id(3L)
                 .nombre("JavaScript")
                 .descripcion("Lenguaje de scripting")
+                .activa(true)
                 .build();
         List<Long> ids = Arrays.asList(1L, 2L, 3L);
 
@@ -207,6 +254,82 @@ class TecnologiaUseCaseTest {
                 .expectNext(tecnologia2)
                 .expectNext(tecnologia3)
                 .verifyComplete();
+    }
+
+    @Test
+    void activarTecnologias_CuandoIdsValidos_DeberiaActivarExitosamente() {
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+
+        when(tecnologiaRepository.activarTecnologias(ids)).thenReturn(Mono.empty());
+
+        StepVerifier.create(tecnologiaUseCase.activarTecnologias(ids))
+                .verifyComplete();
+
+        verify(tecnologiaRepository).activarTecnologias(ids);
+    }
+
+    @Test
+    void activarTecnologias_CuandoListaVacia_DeberiaCompletarSinError() {
+        List<Long> ids = Collections.emptyList();
+
+        when(tecnologiaRepository.activarTecnologias(ids)).thenReturn(Mono.empty());
+
+        StepVerifier.create(tecnologiaUseCase.activarTecnologias(ids))
+                .verifyComplete();
+
+        verify(tecnologiaRepository).activarTecnologias(ids);
+    }
+
+    @Test
+    void activarTecnologias_CuandoRepositoryFalla_DeberiaPropagarError() {
+        List<Long> ids = Arrays.asList(1L, 2L);
+        RuntimeException error = new RuntimeException("Error de base de datos");
+
+        when(tecnologiaRepository.activarTecnologias(ids)).thenReturn(Mono.error(error));
+
+        StepVerifier.create(tecnologiaUseCase.activarTecnologias(ids))
+                .expectError(RuntimeException.class)
+                .verify();
+
+        verify(tecnologiaRepository).activarTecnologias(ids);
+    }
+
+    @Test
+    void desactivarTecnologias_CuandoIdsValidos_DeberiaDesactivarExitosamente() {
+        List<Long> ids = Arrays.asList(1L, 2L, 3L);
+
+        when(tecnologiaRepository.desactivarTecnologias(ids)).thenReturn(Mono.empty());
+
+        StepVerifier.create(tecnologiaUseCase.desactivarTecnologias(ids))
+                .verifyComplete();
+
+        verify(tecnologiaRepository).desactivarTecnologias(ids);
+    }
+
+    @Test
+    void desactivarTecnologias_CuandoListaVacia_DeberiaCompletarSinError() {
+        List<Long> ids = Collections.emptyList();
+
+        when(tecnologiaRepository.desactivarTecnologias(ids)).thenReturn(Mono.empty());
+
+        StepVerifier.create(tecnologiaUseCase.desactivarTecnologias(ids))
+                .verifyComplete();
+
+        verify(tecnologiaRepository).desactivarTecnologias(ids);
+    }
+
+    @Test
+    void desactivarTecnologias_CuandoRepositoryFalla_DeberiaPropagarError() {
+        List<Long> ids = Arrays.asList(1L, 2L);
+        RuntimeException error = new RuntimeException("Error de base de datos");
+
+        when(tecnologiaRepository.desactivarTecnologias(ids)).thenReturn(Mono.error(error));
+
+        StepVerifier.create(tecnologiaUseCase.desactivarTecnologias(ids))
+                .expectError(RuntimeException.class)
+                .verify();
+
+        verify(tecnologiaRepository).desactivarTecnologias(ids);
     }
 }
 

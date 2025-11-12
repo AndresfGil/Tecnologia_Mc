@@ -12,11 +12,13 @@ class TecnologiaTest {
                 .id(1L)
                 .nombre("Java")
                 .descripcion("Lenguaje de programación")
+                .activa(true)
                 .build();
 
         assertEquals(1L, tecnologia.getId());
         assertEquals("Java", tecnologia.getNombre());
         assertEquals("Lenguaje de programación", tecnologia.getDescripcion());
+        assertTrue(tecnologia.getActiva());
     }
 
     @Test
@@ -26,6 +28,7 @@ class TecnologiaTest {
         assertNull(tecnologia.getId());
         assertNull(tecnologia.getNombre());
         assertNull(tecnologia.getDescripcion());
+        assertNull(tecnologia.getActiva());
     }
 
     @Test
@@ -35,15 +38,17 @@ class TecnologiaTest {
         assertNull(tecnologia.getId());
         assertNull(tecnologia.getNombre());
         assertNull(tecnologia.getDescripcion());
+        assertNull(tecnologia.getActiva());
     }
 
     @Test
     void allArgsConstructor_DeberiaCrearInstanciaConTodosLosParametros() {
-        Tecnologia tecnologia = new Tecnologia(1L, "Python", "Lenguaje interpretado");
+        Tecnologia tecnologia = new Tecnologia(1L, "Python", "Lenguaje interpretado", true);
 
         assertEquals(1L, tecnologia.getId());
         assertEquals("Python", tecnologia.getNombre());
         assertEquals("Lenguaje interpretado", tecnologia.getDescripcion());
+        assertTrue(tecnologia.getActiva());
     }
 
     @Test
@@ -70,10 +75,12 @@ class TecnologiaTest {
         tecnologia.setId(2L);
         tecnologia.setNombre("JavaScript");
         tecnologia.setDescripcion("Lenguaje de scripting");
+        tecnologia.setActiva(false);
 
         assertEquals(2L, tecnologia.getId());
         assertEquals("JavaScript", tecnologia.getNombre());
         assertEquals("Lenguaje de scripting", tecnologia.getDescripcion());
+        assertFalse(tecnologia.getActiva());
     }
 }
 

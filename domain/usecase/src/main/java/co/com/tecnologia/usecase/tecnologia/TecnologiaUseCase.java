@@ -22,6 +22,15 @@ public class TecnologiaUseCase {
     }
 
     public Flux<Tecnologia> obtenerTecnologiasPorIds(List<Long> ids) {
-        return tecnologiaRepository.obtenerTecnologiasPorIds(ids);
+        return tecnologiaRepository.obtenerTecnologiasPorIds(ids)
+                .filter(tecnologia -> Boolean.TRUE.equals(tecnologia.getActiva()));
+    }
+
+    public Mono<Void> activarTecnologias(List<Long> ids) {
+        return tecnologiaRepository.activarTecnologias(ids);
+    }
+
+    public Mono<Void> desactivarTecnologias(List<Long> ids) {
+        return tecnologiaRepository.desactivarTecnologias(ids);
     }
 }

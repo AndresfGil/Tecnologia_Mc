@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.PATCH;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -16,6 +17,8 @@ public class RouterRest implements TecnologiaControllerDocs {
     @Override
     public RouterFunction<ServerResponse> routerFunction(TecnologiaHandler handler) {
         return route(POST("/api/tecnologia"), handler::listenGuardarTecnologia)
-                .andRoute(POST("/api/tecnologia/batch"), handler::listenObtenerTecnologiasPorIds);
+                .andRoute(POST("/api/tecnologia/batch"), handler::listenObtenerTecnologiasPorIds)
+                .andRoute(PATCH("/api/tecnologia/activar"), handler::listenActivarTecnologias)
+                .andRoute(PATCH("/api/tecnologia/desactivar"), handler::listenDesactivarTecnologias);
     }
 }

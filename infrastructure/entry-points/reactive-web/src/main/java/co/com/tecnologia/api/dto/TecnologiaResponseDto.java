@@ -11,7 +11,10 @@ public record TecnologiaResponseDto(
         String nombre,
         
         @Schema(description = "Descripción de la tecnología", example = "Lenguaje de programación orientado a objetos")
-        String descripcion
+        String descripcion,
+        
+        @Schema(description = "Indica si la tecnología está activa", example = "true")
+        Boolean activa
 ) {
 }
 

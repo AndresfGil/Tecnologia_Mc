@@ -13,6 +13,7 @@ public class TecnologiaMapper {
         return Tecnologia.builder()
                 .nombre(dto.nombre())
                 .descripcion(dto.descripcion())
+                .activa(true) // Por defecto, las tecnologías se crean activas
                 .build();
     }
 
@@ -20,7 +21,8 @@ public class TecnologiaMapper {
         return new TecnologiaResponseDto(
                 tecnologia.getId(),
                 tecnologia.getNombre(),
-                tecnologia.getDescripcion()
+                tecnologia.getDescripcion(),
+                tecnologia.getActiva()
         );
     }
 

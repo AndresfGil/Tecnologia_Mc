@@ -37,4 +37,30 @@ public class TecnologiaRepositoryAdapter extends ReactiveAdapterOperations<
     public Mono<Boolean> existePorNombre(String nombre) {
         return repository.existsByNombre(nombre);
     }
+
+    @Override
+    public Mono<Void> activarTecnologias(List<Long> ids) {
+        return repository.findByIdIn(ids)
+                .map(entity -> entity.toBuilder().activa(true).build())
+                .collectList()
+                .flatMap(entities -> repository.saveAll(entities).then());
+    }
+
+    @Override
+    public Mono<Void> desactivarTecnologias(List<Long> ids) {
+        return repository.findByIdIn(ids)
+                .map(entity -> entity.toBuilder().activa(false).build())
+                .collectList()
+                .flatMap(entities -> repository.saveAll(entities).then());
+    }
+
+    @Override
+    public Mono<Void> eliminarInactivasAntiguas(java.time.LocalDateTime fechaLimite) {
+        return repository.findAll()
+                .filter(entity -> Boolean.FALSE.equals(entity.getActiva()))
+                .filter(entity -> entity.getFechaModificacion() != null && 
+                                 entity.getFechaModificacion().isBefore(fechaLimite))
+                .flatMap(entity -> repository.deleteById(entity.getId()))
+                .then();
+    }
 }

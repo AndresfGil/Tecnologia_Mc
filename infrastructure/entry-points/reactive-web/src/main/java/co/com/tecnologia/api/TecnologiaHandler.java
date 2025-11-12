@@ -44,4 +44,22 @@ public class TecnologiaHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(responseList)));
     }
+
+    public Mono<ServerResponse> listenActivarTecnologias(ServerRequest req) {
+        return req.bodyToMono(TecnologiaBatchRequestDto.class)
+                .flatMap(dto -> dtoValidator.validate(dto)
+                        .flatMap(dtoValidado -> tecnologiaUseCase.activarTecnologias(dtoValidado.ids()))
+                        .then(ServerResponse
+                                .status(HttpStatus.NO_CONTENT)
+                                .build()));
+    }
+
+    public Mono<ServerResponse> listenDesactivarTecnologias(ServerRequest req) {
+        return req.bodyToMono(TecnologiaBatchRequestDto.class)
+                .flatMap(dto -> dtoValidator.validate(dto)
+                        .flatMap(dtoValidado -> tecnologiaUseCase.desactivarTecnologias(dtoValidado.ids()))
+                        .then(ServerResponse
+                                .status(HttpStatus.NO_CONTENT)
+                                .build()));
+    }
 }
